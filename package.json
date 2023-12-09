@@ -34,13 +34,15 @@
 	"scripts": {
 		"clean": "yarn hardhat clean",
 		"compile": "yarn hardhat compile",
-    "deploy": "yarn hardhat deploy",
-    "deploy:sepolia": "yarn hardhat deploy --network sepolia",
+		"deploy": "yarn hardhat deploy",
+		"deploy:sepolia": "yarn hardhat deploy --network sepolia",
 		"test": "yarn hardhat test",
 		"test:sepolia": "yarn hardhat test --network sepolia",
 		"coverage": "yarn hardhat coverage",
-		"lint": "yarn solhint contracts/*.sol",
-		"lint:fix": "yarn solhint contracts/*.sol --fix",
-		"format": "yarn prettier --write ."
+		"lint": "yarn lint:sol && prettier:check",
+		"lint:sol": "yarn solhint --max-warnings 0 \"contracts/**/*.sol\"",
+		"lint:sol:fix": "yarn solhint --max-warnings 0 \"contracts/**/*.sol\" --fix",
+		"prettier:check": "prettier --check \"**/*.{js,json,md,sol,ts,yml}\"",
+		"prettier:write": "prettier --write \"**/*.{js,json,md,sol,ts,yml}\""
 	}
 }
