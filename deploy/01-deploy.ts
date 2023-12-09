@@ -10,10 +10,11 @@ const deployFunc: DeployFunction = async function (
 	const { deploy, log, get } = deployments;
 	const { deployer } = await getNamedAccounts();
 	const chainId = network.config.chainId || 11155111;
-
+	const isDevelopmentChain = developmentChains.includes(network.name);
 	let ethUsdPriceFeedAddress;
+
 	// ! if on dev chain -> get mock address, ELSE get from network
-	if (developmentChains.includes(network.name)) {
+	if (isDevelopmentChain) {
 		const ethUsdAggregator = await get("MockV3Aggregator");
 		ethUsdPriceFeedAddress = ethUsdAggregator.address;
 	} else {
@@ -24,13 +25,12 @@ const deployFunc: DeployFunction = async function (
 		from: deployer,
 		args: [ethUsdPriceFeedAddress], // put price feed address
 		log: true,
-		waitConfirmations: networkConfig[chainId].blockConfirmations,
+		waitConfirmations: isDevelopmentChain
+			? 1
+			: networkConfig[chainId].blockConfirmations,
 	});
 
-	if (
-		!developmentChains.includes(network.name) &&
-		process.env.ETHERSCAN_API_KEY
-	) {
+	if (!isDevelopmentChain && process.env.ETHERSCAN_API_KEY) {
 		await verify(fundMe.address, [ethUsdPriceFeedAddress]);
 	}
 
