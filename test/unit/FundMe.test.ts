@@ -119,5 +119,18 @@ describe("FundMe", () => {
 				);
 			}
 		});
+
+		it("Only allows owner to withdraw", async () => {
+			const accounts = await ethers.getSigners();
+			const attacker = accounts[1];
+
+			const connectedAttackerToContract = fundMe.connect(attacker);
+			await expect(
+				connectedAttackerToContract.withdraw(),
+			).to.be.revertedWithCustomError(
+				connectedAttackerToContract,
+				"FundMe__NotOwner",
+			);
+		});
 	});
 });
