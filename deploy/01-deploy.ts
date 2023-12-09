@@ -1,6 +1,7 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { developmentChains, networkConfig } from "../helper-hardhat-config";
+import { verify } from "../utils/verify";
 
 const deployFunc: DeployFunction = async function (
 	hre: HardhatRuntimeEnvironment,
@@ -24,6 +25,13 @@ const deployFunc: DeployFunction = async function (
 		args: [ethUsdPriceFeedAddress], // put price feed address
 		log: true,
 	});
+
+	if (
+		!developmentChains.includes(network.name) &&
+		process.env.ETHERSCAN_API_KEY
+	) {
+		await verify(fundMe.address, [ethUsdPriceFeedAddress]);
+	}
 
 	log("===================================================================");
 };
