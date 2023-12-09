@@ -24,6 +24,7 @@ const deployFunc: DeployFunction = async function (
 		from: deployer,
 		args: [ethUsdPriceFeedAddress], // put price feed address
 		log: true,
+		waitConfirmations: networkConfig[chainId].blockConfirmations,
 	});
 
 	if (
